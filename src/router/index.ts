@@ -1,19 +1,15 @@
 import { Router } from 'express';
-import { UserModel } from 'src/models/UserModel';
-import { PostModel, PostType } from 'src/models/PostModel';
+import { WildberriesService } from 'src/services/WildberriesService';
+import { WarehouseService } from 'src/services/WarehouseService';
 import type { Request, Response } from 'express';
 
 export const router = Router();
 
-router.get('/health', (req: Request, res: Response) => {
-  res.status(200).send('ok');
-});
-
-router.get('/users', async (req: Request, res: Response) => {
+router.get('/wb-data', async (req: Request, res: Response) => {
   try {
-    res.json({
-      data: await UserModel.all(),
-    });
+    const wareHouseService = new WarehouseService()
+    await wareHouseService.saveOrUpdateTariffData('2024-11-10');
+    res.status(200).send('Data added and updated successfully');
   } catch (error) {
     res.status(500).json({
       message: 'Internal Server Error',
@@ -21,16 +17,16 @@ router.get('/users', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/posts/:id', async (req: Request, res: Response) => {
-  if (!req.params.id) {
-    res.status(400).json({
-      message: 'Bad Request',
-    });
-  }
+router.get('/health', (req: Request, res: Response) => {
+  res.status(200).send('ok');
+});
 
+router.get('/check-wb-data', async (req: Request, res: Response) => {
   try {
+    const wbService = new WildberriesService()
+    const result = await wbService.fetchData('2024-11-10')
     res.json({
-      data: await PostModel.findById<PostType>(req.params.id),
+      data: result,
     });
   } catch (error) {
     res.status(500).json({
