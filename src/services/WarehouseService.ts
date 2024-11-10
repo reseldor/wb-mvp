@@ -11,15 +11,14 @@ interface WarehouseData {
 }
 
 export class WarehouseService {
-    private knex = database;
-    private wbService = new WildberriesService()
+    static knex = database;
 
-    private async fetchTariffs(date: string): Promise<WarehouseData[]> {
-        const response = await this.wbService.fetchData(date);
+    private static async fetchTariffs(date: string): Promise<WarehouseData[]> {
+        const response = await WildberriesService.fetchData(date);
         return response.data.response.data.warehouseList;
     }
 
-    public async saveOrUpdateTariffData(date: string): Promise<void> {
+    public static async saveOrUpdateTariffData(date: string): Promise<void> {
         const warehouseData = await this.fetchTariffs(date);
         const trx = await this.knex.transaction();
 

@@ -5,10 +5,10 @@ import type { Request, Response } from 'express';
 
 export const router = Router();
 
+//route for testing
 router.get('/wb-data', async (req: Request, res: Response) => {
   try {
-    const wareHouseService = new WarehouseService()
-    await wareHouseService.saveOrUpdateTariffData('2024-11-10');
+    await WarehouseService.saveOrUpdateTariffData('2024-11-10');
     res.status(200).send('Data added and updated successfully');
   } catch (error) {
     res.status(500).json({
@@ -23,8 +23,7 @@ router.get('/health', (req: Request, res: Response) => {
 
 router.get('/check-wb-data', async (req: Request, res: Response) => {
   try {
-    const wbService = new WildberriesService()
-    const result = await wbService.fetchData('2024-11-10')
+    const result = await WildberriesService.fetchData('2024-11-10')
     res.json({
       data: result,
     });
