@@ -41,7 +41,7 @@ This project is a service that integrates with the Wildberries API to manage and
 2. **Install Dependencies**:
 
     ```bash
-    npm install
+    npm i
     ```
 
 3. **Setup PostgreSQL Database**:
@@ -65,3 +65,30 @@ DB_USER=your_db_user
 DB_PASSWORD=your_db_password
 DB_NAME=wb_mvp_db
 GOOGLE_APPLICATION_CREDENTIALS=./secrets.json
+```
+
+### Running the Application
+
+**Start the server with**:
+
+ ```bash
+ npm run dev
+ ```
+
+The server should now be running on the port specified in .env.
+
+### Scheduling Cron Jobs
+
+A cron job is scheduled to fetch and update tariff data every day (for example at 10:50 AM Moscow time). The job runs automatically when the server starts.
+
+### Usage
+
+The service provides an endpoint to fetch data and export it to Google Sheets automatically. To modify settings or add more sheets, update the configuration accordingly.
+
+### Contributing
+
+1. **Fork** the repository.
+2. **Create** a new branch for your feature (```git checkout -b feature-name```).
+3. **Commit** your changes (```git commit -m 'Add new feature'```).
+4. **Push** to the branch (```git push origin feature-name```).
+5. Open a **Pull Request**.
