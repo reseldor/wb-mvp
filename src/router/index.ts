@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { WildberriesService } from 'src/services/WildberriesService';
 import { WarehouseService } from 'src/services/WarehouseService';
 import type { Request, Response } from 'express';
 
@@ -17,19 +16,18 @@ router.get('/wb-data', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/health', (req: Request, res: Response) => {
-  res.status(200).send('ok');
-});
-
-router.get('/check-wb-data', async (req: Request, res: Response) => {
+//route for testing
+router.get('/upload-google-sheet', async (req: Request, res: Response) => {
   try {
-    const result = await WildberriesService.fetchData('2024-11-10')
-    res.json({
-      data: result,
-    });
+    const result = await WarehouseService.uploadToGoogleSheet(`wb-tariffs-${new Date().toISOString()}`);
+    res.status(200).send(result);
   } catch (error) {
     res.status(500).json({
       message: 'Internal Server Error',
     });
   }
+});
+
+router.get('/health', (req: Request, res: Response) => {
+  res.status(200).send('ok');
 });

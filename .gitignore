@@ -112,3 +112,6 @@ dist
 
 # Package-lock.json
 package-lock.json
+
+# Secret json for google service account
+secrets.json

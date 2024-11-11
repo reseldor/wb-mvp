@@ -1,4 +1,5 @@
 import { WildberriesService } from 'src/services/WildberriesService';
+import { GoogleSheetService } from 'src/services/GoogleSheetService';
 import { database } from 'src/database';
 
 interface WarehouseData {
@@ -52,6 +53,56 @@ export class WarehouseService {
             await trx.rollback();
             console.error('Failed to save/update tariff data:', error);
         }
+    }
+
+    private static async fetchDataFromDB(): Promise<string[][]> {
+        try {
+            const headers = [
+                'Warehouse Name',
+                'Box Delivery and Storage Expr',
+                'Box Delivery Base',
+                'Box Delivery Liter',
+                'Box Storage Base',
+                'Box Storage Liter',
+              ];
+            const rows = await this.knex('tariff_data')
+              .join('warehouse', 'tariff_data.warehouse_id', '=', 'warehouse.id')
+              .select(
+                'warehouse.warehouse_name',
+                'tariff_data.box_delivery_and_storage_expr',
+                'tariff_data.box_delivery_base',
+                'tariff_data.box_delivery_liter',
+                'tariff_data.box_storage_base',
+                'tariff_data.box_storage_liter'
+              )
+              .orderBy('tariff_data.box_delivery_and_storage_expr', 'asc');
+      
+            const data = rows.map(row => [
+              row.warehouse_name,
+              row.box_delivery_and_storage_expr?.toString() || '-',
+              row.box_delivery_base?.toString() || '-',
+              row.box_delivery_liter?.toString() || '-',
+              row.box_storage_base?.toString() || '-',
+              row.box_storage_liter?.toString() || '-',
+            ]);
+            return [headers, ...data];
+          } catch (error) {
+            console.error('Error fetching data from the database:', error);
+            return [];
+          }
+    }
+
+    public static async uploadToGoogleSheet(title: string): Promise<{ id: any; url: any; } | undefined> {
+        const today = new Date().toISOString().split('T')[0];
+        await WarehouseService.saveOrUpdateTariffData(today);
+        const googleSheetService = new GoogleSheetService();
+        const spreadsheet = await googleSheetService.createNewSpreadsheet(title);
+        const data = await this.fetchDataFromDB()
+        await googleSheetService.writeDataToSpreadsheet(spreadsheet?.id, data);
+        return {
+            id: spreadsheet?.id || '-',
+            url: spreadsheet?.url || '-',
+        };
     }
 }
 
