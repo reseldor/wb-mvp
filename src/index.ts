@@ -17,7 +17,7 @@ app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-cron.schedule('2 13 * * *', async () => {
+cron.schedule('20 13 * * *', async () => {
   await WarehouseService.uploadToGoogleSheet(`wb-tariffs-${new Date().toISOString()}`);
   console.log(`cron start-${new Date().toISOString().split('T')[0]}`);
 });
