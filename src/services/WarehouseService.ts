@@ -92,17 +92,17 @@ export class WarehouseService {
           }
     }
 
-    public static async uploadToGoogleSheet(title: string): Promise<{ id: any; url: any; } | undefined> {
+    public static async uploadToGoogleSheet(title: string): Promise<void> {
         const today = new Date().toISOString().split('T')[0];
         await WarehouseService.saveOrUpdateTariffData(today);
         const googleSheetService = new GoogleSheetService();
         const spreadsheet = await googleSheetService.createNewSpreadsheet(title);
         const data = await this.fetchDataFromDB()
         await googleSheetService.writeDataToSpreadsheet(spreadsheet?.id, data);
-        return {
+        console.log({
             id: spreadsheet?.id || '-',
             url: spreadsheet?.url || '-',
-        };
+        })
     }
 }
 

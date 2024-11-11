@@ -19,8 +19,8 @@ router.get('/wb-data', async (req: Request, res: Response) => {
 //route for testing
 router.get('/upload-google-sheet', async (req: Request, res: Response) => {
   try {
-    const result = await WarehouseService.uploadToGoogleSheet(`wb-tariffs-${new Date().toISOString()}`);
-    res.status(200).send(result);
+    await WarehouseService.uploadToGoogleSheet(`wb-tariffs-${new Date().toISOString()}`);
+    res.status(200).send('Data uploaded successfully');
   } catch (error) {
     res.status(500).json({
       message: 'Internal Server Error',
